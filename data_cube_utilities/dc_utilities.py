@@ -147,6 +147,7 @@ def perform_timeseries_analysis(dataset_in, band_name, intermediate_product=None
         variables: normalized_data, total_data, total_clean
     """
 
+    from numpy import nan_to_num
     assert operation in ['mean', 'max', 'min'], "Please enter a valid operation."
 
     data = dataset_in[band_name]
@@ -179,8 +180,7 @@ def perform_timeseries_analysis(dataset_in, band_name, intermediate_product=None
         dataset_out['min'] = xr.concat([dataset_out['min'], data.min(dim='time')], dim='time').min(dim='time')
         dataset_out['max'] = xr.concat([dataset_out['max'], data.max(dim='time')], dim='time').max(dim='time')
 
-    nan_to_num(dataset_out, 0)
-
+    nan_to_num(dataset_out, copy=False, nan=0)
     return dataset_out
 
 
